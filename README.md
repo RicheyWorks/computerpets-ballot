@@ -1,30 +1,36 @@
 # Ballot
 
-**Feature Voting App** — Lets token and NFT holders vote on the ComputerPets development roadmap.
+**Give the ComputerPets community a roadmap voice.**
 
-Part of [ComputerPets](https://github.com/RicheyWorks/computerpets). Map: [computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem).
+A planned voting app with ownership snapshots and a capped voice for Steam players.
 
-| | |
+**Stage: design scaffold.** This checkout contains a design document and a source placeholder. The experience below is planned; there is no runnable app or integrated service yet.
+
+[Status](#status) · [Planned experience](#planned-experience) · [Contributor quickstart](#contributor-quickstart) · [Service contract](docs/CONTRACT.md) · [Ecosystem map](https://github.com/RicheyWorks/computerpets-ecosystem)
+
+## Status
+
+| Available today | What you can inspect |
 | --- | --- |
-| Status | Design scaffold — contract frozen, implementation next |
-| License | MIT |
-| First pet | Still [Rui on the desktop](https://github.com/RicheyWorks/computerpets/blob/main/docs/START-HERE.md). This organ is optional. |
+| [Service contract](docs/CONTRACT.md) | Intended behavior, boundaries, and planned dependencies. |
+| [Source placeholder](src/ballot/index.ts) | Name metadata only; no package.json, app, or runtime is checked in. |
+| [MIT license](LICENSE) | Licensing terms for the repository. |
 
-## The job
+Gameplay, endpoints, integration arrows, and failure handling on this page describe implementation targets. No build/test harness, CI workflow, or product screenshots are included in this scaffold.
 
-Holders propose. Weight comes from verified pets + optional VOTE credits. Steam-only players still get a capped voice so the chain does not own the game.
+## Planned experience
 
-The flagship overlay already puts a living sticker on the real desktop (Rui first, 210 kinds). Ballot does not replace that. It is one organ.
+- GET /v1/proposals — open / closed
+- POST /v1/proposals — holder + steam identity
+- POST /v1/vote — weighted, one ballot per proposal
 
-## Who uses it
+### Planned technology
 
-NFT holders and Steam-capped players voting the roadmap.
+TypeScript · React 19 · snapshot-style votes · NFT / Steam weight · Ledger VOTE asset
 
-## What it is not
+### Planned connections
 
-Not a DAO that can mint money. Steam-only still has a voice, capped.
-
-## Architecture
+These arrows show intended dependencies, rather than working integrations.
 
 ```mermaid
 flowchart LR
@@ -34,81 +40,47 @@ flowchart LR
   ballot --> ledger
 ```
 
-## Stack
+## Contributor quickstart
 
-TypeScript · React 19 · snapshot-style votes · NFT / Steam weight · Ledger VOTE asset
+With access to this private repository, Git and PowerShell are enough to review the scaffold:
 
-GroupId / namespace: `com.enterprisepet.ballot`  
-Default listen: `8080`
+```powershell
+git clone https://github.com/RicheyWorks/computerpets-ballot.git
+Set-Location computerpets-ballot
+Get-Content docs/CONTRACT.md
+Get-Content src/ballot/index.ts
+```
 
-## Contract
+Read [Service contract](docs/CONTRACT.md) before choosing implementation details. The commands above inspect the checked-in files; app installation, editor launch, and server startup become possible after a buildable project and entry point are added.
 
-### Data
-
-`Proposal(id, body, deadline) · Weight(nftCount, steamCap) · Ballot(choice, weight)`
-
-### Surface
-
-- GET /v1/proposals — open / closed
-- POST /v1/proposals — holder + steam identity
-- POST /v1/vote — weighted, one ballot per proposal
-
-### Failure doctrine
-
-Sybil NFT wash → snapshot block, not live balance. Unverified voter → 401. After deadline → read-only.
-
-## First slice
-
-Build this and stop. Do not boil the ocean.
+### First implementation target
 
 **One proposal + weighted vote. Snapshot of holdings at open, not live wash.**
 
 You know it works when: Unverified 401. After deadline read-only. Wash trades after snapshot do not count.
 
-## Environment
+Treat this as an acceptance target for a future implementation. Start with the documented slice, add the required project setup and focused tests, and update these instructions with commands that work from a fresh clone.
 
-`LEDGER_URL`, `MINTER_URL`, `STEAMGATE_URL`
+## Design boundaries
 
-Never commit secrets. Never put Steam or chain keys in the overlay.
+- Stay canon with 210 species. No illegal hybrids. No swapped voices.
+- Treat the desktop overlay as the main quest. This organ is optional until wired.
+- Fail soft: the overlay keeps walking if this service is down, unless this *is* the overlay.
+- No PII in public artifacts (Steam id, wallet, home path, webcam frames).
 
-## Neighbors
+**Required failure behavior:**
 
-- computerpets-minter
-- computerpets-ledger
-- computerpets-steamgate
-- computerpets-console
+Sybil NFT wash → snapshot block, not live balance. Unverified voter → 401. After deadline → read-only.
 
-## Layout
+## Ecosystem
 
-```
-computerpets-ballot/
-  README.md           this file
-  LICENSE             MIT
-  docs/CONTRACT.md    the same contract, frozen for implementers
-  src/                implementation lands here
-```
+- [computerpets-minter](https://github.com/RicheyWorks/computerpets-minter)
+- [computerpets-ledger](https://github.com/RicheyWorks/computerpets-ledger)
+- [computerpets-steamgate](https://github.com/RicheyWorks/computerpets-steamgate)
+- [computerpets-console](https://github.com/RicheyWorks/computerpets-console)
 
-## Run (Windows)
-
-PowerShell, from this folder, after the flagship helpers (Git, Node LTS 22+, JDK 21 as needed):
-
-```powershell
-cd app; npm install; npm run dev
-```
-
-You do not need this service to meet Rui. The [flagship start-here](https://github.com/RicheyWorks/computerpets/blob/main/docs/START-HERE.md) is still the first pet.
-
-## Links
-
-- Flagship: [RicheyWorks/computerpets](https://github.com/RicheyWorks/computerpets)
-- This repo: [RicheyWorks/computerpets-ballot](https://github.com/RicheyWorks/computerpets-ballot)
-- Map: [RicheyWorks/computerpets-ecosystem](https://github.com/RicheyWorks/computerpets-ecosystem)
-- Contract file: [docs/CONTRACT.md](docs/CONTRACT.md)
+Start with the [ComputerPets flagship](https://github.com/RicheyWorks/computerpets) for the desktop pet. This repository describes an optional extension; the [ecosystem map](https://github.com/RicheyWorks/computerpets-ecosystem) explains the broader plan.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
----
-
-*Two hundred ten living kinds. Keep them so a line does not go quiet.*
